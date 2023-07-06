@@ -48,7 +48,11 @@ int main() {
 	Game game;
 
 	game.resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
-	game.resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
+	game.resourceManager.materials["BasicMaterial"].shader.UseShader();
+	glUniform1i(glGetUniformLocation(game.resourceManager.materials["BasicMaterial"].shader.ID, "tex1"), 0);
+	game.resourceManager.materials["BasicMaterial"].shader.SetInt("tex2", 1);
+	game.resourceManager.materials["BasicMaterial"].texture1 = Texture("res/tex/wall.jpg");
+	game.resourceManager.materials["BasicMaterial"].texture2 = Texture("res/tex/moss.jpg");
 
 	vec4 col1{ 0, 0, 1, 1 };
 	Shape shape1(vertices, indices, game.resourceManager.materials["BasicMaterial"], col1);

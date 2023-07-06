@@ -6,7 +6,8 @@
 
 struct Material {
     Shader shader;
-    Texture texture;
+    Texture texture1;
+    Texture texture2;
     vec4 color;
 
     Material(){};
