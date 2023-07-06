@@ -44,10 +44,10 @@ int main() {
 
 	Game game;
 
-	game.resourceManager.shaderPrograms["BasicShader"] = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
+	game.resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 
 	vec4 col1{ 0, 0, 1, 1 };
-	Shape shape1(vertices1, indices, game.resourceManager.shaderPrograms["BasicShader"], col1);
+	Shape shape1(vertices1, indices, game.resourceManager.materials["BasicMaterial"], col1);
 
 	while (!glfwWindowShouldClose(window))
 	{

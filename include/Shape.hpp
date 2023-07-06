@@ -1,14 +1,13 @@
 #pragma once
 #include <glad/glad.h>
 #include <vector>
-#include <Shader.hpp>
+#include <Material.hpp>
 
 struct Shape {
 	unsigned int VAO;
-	Shader shaderProgram;
-	vec4 color { 1.0, 1.0, 1.0, 1.0 };
+	Material material;
 
-	Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Shader pShaderProgram, vec4 pColor) : shaderProgram(pShaderProgram) {
+	Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Material mat, vec4 pColor) : material(mat) {
 		unsigned int VBO;
 
 		glGenVertexArrays(1, &VAO);
@@ -29,9 +28,5 @@ struct Shape {
 		glGenBuffers(1, &EBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-		color[0] = pColor[0];
-		color[1] = pColor[1];
-		color[2] = pColor[2];
-		color[3] = pColor[3];
 	}
 };
