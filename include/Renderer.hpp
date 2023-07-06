@@ -7,6 +7,7 @@ struct Renderer {
 		int vertexColorLocation2 = glGetUniformLocation(shape.shaderProgram.ID, "color");
 		glUseProgram(shape.shaderProgram.ID);
 		glUniform4f(vertexColorLocation2, shape.color[0], shape.color[1], shape.color[2], shape.color[3]);
+		shape.shaderProgram.SetFloat("xOffset", 0.5f);
 		glBindVertexArray(shape.VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
