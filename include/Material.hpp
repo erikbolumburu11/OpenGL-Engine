@@ -1,13 +1,13 @@
 #pragma once
 
-#include <linmath.h/linmath.h>
+#include <glm/glm.hpp>
 #include <Shader.hpp>
 #include <Texture.hpp>
 
 struct Material {
     Shader shader;
     Texture texture;
-    vec4 color;
+    glm::vec4 color;
 
     Material(){};
 };

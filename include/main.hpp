@@ -2,7 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <linmath.h/linmath.h>
+#include <glm/glm.hpp>
 
 #include <stdlib.h>
 #include <stdio.h>

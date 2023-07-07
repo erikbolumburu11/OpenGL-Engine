@@ -21,8 +21,9 @@ set(glad_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/glad
 find_package(glad REQUIRED)
 target_link_libraries(OpenGL-Engine glad::glad)
 
-find_path(LINMATH_INCLUDE_DIRS "linmath.h/linmath.h")
-target_link_directories(OpenGL-Engine PRIVATE ${LINMATH_INCLUDE_DIRS})
+set(glm_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/glm")
+find_package(glm REQUIRED)
+target_link_libraries(OpenGL-Engine glm::glm)
 
 set(imgui_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/imgui")
 find_package(imgui REQUIRED)

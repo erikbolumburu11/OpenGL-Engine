@@ -1,6 +1,8 @@
 #include <Shape.hpp>
 
-Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Material mat, vec4 pColor) : material(mat) {
+Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Material mat, glm::vec4 pColor) 
+        : material(mat), transform(glm::mat4(1.0f)) {
+
     unsigned int VBO;
 
     glGenVertexArrays(1, &VAO);
@@ -29,4 +31,5 @@ Shape::Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Mat
     material.color[1] = pColor[1];
     material.color[2] = pColor[2];
     material.color[3] = pColor[3];
+
 }

@@ -2,7 +2,7 @@
   "dependencies": [
     "glfw3",
     "glad",
-    "linmath",
+    "glm",
     {
       "name": "imgui",
       "features": ["glfw-binding", "opengl3-binding"]

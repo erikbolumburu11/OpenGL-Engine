@@ -50,7 +50,7 @@ int main() {
 	game.resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 	game.resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
 
-	vec4 col1{ 0, 0, 1, 1 };
+	glm::vec4 col1{ 0, 0, 1, 1 };
 	Shape shape1(vertices, indices, game.resourceManager.materials["BasicMaterial"], col1);
 
 	while (!glfwWindowShouldClose(window))
