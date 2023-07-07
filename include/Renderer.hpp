@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Shape.hpp>
 
@@ -8,14 +9,19 @@ struct Renderer {
 	void Draw(Shape shape) {
 		glUseProgram(shape.material.shader.ID);
 
-        shape.transform = glm::rotate(shape.transform, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+		shape.model = glm::rotate(shape.model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
+		static float currentPos = 0.0f;
+		currentPos += 0.01f;
+		shape.view = glm::translate(shape.view, glm::vec3(0.0f, sin(currentPos), 0.0f));  
 
-		unsigned int transformLoc = glGetUniformLocation(shape.material.shader.ID, "transform");
-		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(shape.transform));
+		shape.material.shader.setMat4("model", shape.model);
+		shape.material.shader.setMat4("view", shape.view);
+		shape.material.shader.setMat4("projection", shape.projection);
 
 		glBindTexture(GL_TEXTURE_2D, shape.material.texture.ID);
 		glBindVertexArray(shape.VAO);
 
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
+
 	}
 };

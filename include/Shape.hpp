@@ -6,7 +6,9 @@
 struct Shape {
 	unsigned int VAO;
 	Material material;
-	glm::mat4 transform;
+	glm::mat4 model;
+	glm::mat4 view;
+	glm::mat4 projection;
 
-	Shape(std::vector<float> vertices, std::vector<unsigned int> indices, Material mat, glm::vec4 pColor);
+	Shape(std::vector<float> vertices, Material mat);
 };

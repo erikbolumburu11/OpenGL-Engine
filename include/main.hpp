@@ -8,13 +8,6 @@
 #include <stdio.h>
 #include <iostream>
 
-// Resize glViewport
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 
-void ProcessInput(GLFWwindow* window) {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-}

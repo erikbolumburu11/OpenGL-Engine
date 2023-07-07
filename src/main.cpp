@@ -6,19 +6,18 @@
 #include <Shape.hpp>
 #include <Game.hpp>
 #include <TestMenu.hpp>
+#include <shapes/cube.hpp>
 
-std::vector<float> vertices = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
-};
+// Resize glViewport
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
 
-std::vector<unsigned int> indices = {
-    0, 1, 3,   // first triangle
-    1, 2, 3    // second triangle
-};  
+void ProcessInput(GLFWwindow* window) {
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
 
 int main() {
 	glfwInit();
@@ -27,7 +26,7 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	//Coordinates Start At The Bottom Left Corner
-	GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL Engine", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "OpenGL Engine", NULL, NULL);
 	if (!window) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -43,6 +42,8 @@ int main() {
 	ImGui_ImplGlfw_InitForOpenGL(window, true);
 	ImGui_ImplOpenGL3_Init("#version 330");
 
+	glEnable(GL_DEPTH_TEST);  
+
 	glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
 	Game game;
@@ -50,22 +51,21 @@ int main() {
 	game.resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 	game.resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
 
-	glm::vec4 col1{ 0, 0, 1, 1 };
-	Shape shape1(vertices, indices, game.resourceManager.materials["BasicMaterial"], col1);
+	Shape shape1(vertices, game.resourceManager.materials["BasicMaterial"]);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		// ImGui
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
 		ProcessInput(window);
-		// Draw Stuff
+
 		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 		game.renderer.Draw(shape1);
 
