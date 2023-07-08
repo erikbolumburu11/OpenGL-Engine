@@ -9,10 +9,10 @@ struct Renderer {
 	void Draw(Shape shape, float deltaTime) {
 		glUseProgram(shape.material.shader.ID);
 
-		shape.model = glm::rotate(shape.model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));  
-		static float currentPos = 0.0f;
-		currentPos += 0.3f * deltaTime;
-		shape.view = glm::translate(shape.view, glm::vec3(0.0f, sin(currentPos), 0.0f));  
+		shape.model = glm::translate(shape.model, glm::vec3(shape.worldPosition));  
+		shape.model = glm::rotate(shape.model, (float)glfwGetTime() * glm::radians(100.0f), glm::vec3(1));  
+
+		shape.view = glm::translate(shape.view, glm::vec3(0.0f, 0.0f, -4.0f));  
 
 		shape.material.shader.setMat4("model", shape.model);
 		shape.material.shader.setMat4("view", shape.view);

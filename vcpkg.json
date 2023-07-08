@@ -3,6 +3,7 @@
     "glfw3",
     "glad",
     "glm",
+    "entt",
     {
       "name": "imgui",
       "features": ["glfw-binding", "opengl3-binding"]

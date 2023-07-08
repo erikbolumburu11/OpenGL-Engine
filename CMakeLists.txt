@@ -7,7 +7,6 @@ enable_testing()
 
 file(GLOB sources CONFIGURE_DEPENDS "src/*.cpp")
 
-# add_executable(OpenGL-Engine src/main.cpp)
 add_executable(OpenGL-Engine "${sources}") 
 target_include_directories(OpenGL-Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_include_directories(OpenGL-Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/ext")
@@ -24,6 +23,10 @@ target_link_libraries(OpenGL-Engine glad::glad)
 set(glm_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/glm")
 find_package(glm REQUIRED)
 target_link_libraries(OpenGL-Engine glm::glm)
+
+set(entt_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/entt")
+find_package(entt REQUIRED)
+target_link_libraries(OpenGL-Engine EnTT::EnTT)
 
 set(imgui_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vcpkg_installed/x64-windows/share/imgui")
 find_package(imgui REQUIRED)
