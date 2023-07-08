@@ -38,19 +38,21 @@ void Game::Start()
 	resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 	resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
 
+	// Generate Cubes
+	Components::ShapeData sd(glm::vec3(0, 1, 0), cubeVertices, resourceManager.materials["BasicMaterial"]);
+	registry.on_construct<Components::Shape>().connect<&Components::OnShapeConstructed>(sd);
+	for (int i = -1; i < 2; i++)
+	{
+		const auto cube = registry.create();	
+		Components::Shape& shape = registry.emplace<Components::Shape>(cube);
+		shape.worldPosition = glm::vec3(i * 2, 0, 0);
+	}
+
 	Update();
 }
 
 void Game::Update()
 {
-	ShapeData sd(glm::vec3(0, 1, 0), cubeVertices, resourceManager.materials["BasicMaterial"]);
-	registry.on_construct<Shape>().connect<&OnShapeConstructed>(sd);
-	for (int i = -1; i < 2; i++)
-	{
-		const auto cube = registry.create();	
-		Shape& shape = registry.emplace<Shape>(cube);
-		shape.worldPosition = glm::vec3(i * 2, 0, 0);
-	}
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -84,8 +86,8 @@ void Game::Update()
 
 void Game::Render()
 {
-	auto shapes = registry.view<Shape>();
-	shapes.each([&](Shape shape){
+	auto shapes = registry.view<Components::Shape>();
+	shapes.each([&](Components::Shape shape){
 		renderer.Draw(shape, deltaTime);
 	});
 }

@@ -4,7 +4,7 @@
 #include <Game.hpp>
 #include <Shape.hpp>
 
-void Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat) {
+void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat) {
 
     unsigned int VBO;
 
@@ -36,7 +36,7 @@ void Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat)
     material.shader.setMat4("projection", projection);
 }
 
-void OnShapeConstructed(ShapeData sd, entt::registry& reg, entt::entity e) {
-	Shape& shape = reg.get<Shape>(e);
+void Components::OnShapeConstructed(Components::ShapeData sd, entt::registry& reg, entt::entity e) {
+	Components::Shape& shape = reg.get<Components::Shape>(e);
     shape.Initialize(sd.vertices, sd.pos, sd.mat);
 }
