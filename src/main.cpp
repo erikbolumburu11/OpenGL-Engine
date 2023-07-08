@@ -19,6 +19,8 @@ void ProcessInput(GLFWwindow* window) {
 		glfwSetWindowShouldClose(window, true);
 }
 
+float lastFrame = 0.0f;
+
 int main() {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -55,6 +57,11 @@ int main() {
 
 	while (!glfwWindowShouldClose(window))
 	{
+
+        float currentFrame = static_cast<float>(glfwGetTime());
+        game.deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
 		glfwPollEvents();
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -67,7 +74,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-		game.renderer.Draw(shape1);
+		game.renderer.Draw(shape1, game.deltaTime);
 
 		TestMenu();
 
