@@ -20,7 +20,6 @@ struct Shape {
 	glm::vec3 worldPosition;
 
 	glm::mat4 model;
-	glm::mat4 view;
 	glm::mat4 projection;
 
 	void Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat);
