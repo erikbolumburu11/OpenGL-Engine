@@ -7,10 +7,21 @@
 void Components::Camera::CameraUpdate(GLFWwindow* window, Components::Camera::Camera* activeCam, entt::registry& reg, float deltaTime)
 {
     auto cams = reg.view<Components::Camera::Camera>();
-    cams.each([&](Components::Camera::Camera& cam){
-        Components::Camera::Move(&cam, activeCam, window, reg, deltaTime);
-        Components::Camera::Look(&cam, activeCam, window, deltaTime);
-    });
+
+    glm::vec2 mouseOffset = Components::Camera::GetMouseOffset(window);
+
+    int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
+    if(state == GLFW_PRESS){
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+        cams.each([&](Components::Camera::Camera& cam){
+            Components::Camera::Move(&cam, activeCam, window, reg, deltaTime);
+            Components::Camera::Look(&cam, activeCam, mouseOffset);
+        });
+    }
+    else {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 }
 
 void Components::Camera::UpdateCameraVectors(Components::Camera::Camera* cam)
@@ -43,35 +54,42 @@ void Components::Camera::Move(Components::Camera::Camera* cam, Components::Camer
         if(glfwGetKey(window, GLFW_KEY_D)) pos += cam->right * vel;
     }
 }
-void Components::Camera::Look(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow *window, float deltaTime)
+
+glm::vec2 Components::Camera::GetMouseOffset(GLFWwindow *window)
 {
     static bool firstMouse = true;
+
     static double lastMousePosX = SCREEN_WIDTH / 2;
     static double lastMousePosY = SCREEN_HEIGHT / 2;
     double mousePosX = SCREEN_WIDTH / 2;
     double mousePosY = SCREEN_HEIGHT / 2;
-    if(cam == activeCam){
-        if (firstMouse)
-        {
-            lastMousePosX = mousePosX;
-            lastMousePosY = mousePosY;
-            firstMouse = false;
-        }
 
-        glfwGetCursorPos(window, &mousePosX, &mousePosY);
-
-        float xOffset = mousePosX - lastMousePosX;
-        float yOffset = lastMousePosY - mousePosY;
-
+    if (firstMouse)
+    {
         lastMousePosX = mousePosX;
         lastMousePosY = mousePosY;
+        firstMouse = false;
+    }
 
+    glfwGetCursorPos(window, &mousePosX, &mousePosY);
+
+    float xOffset = mousePosX - lastMousePosX;
+    float yOffset = lastMousePosY - mousePosY;
+
+    lastMousePosX = mousePosX;
+    lastMousePosY = mousePosY;
+
+    return glm::vec2(xOffset, yOffset);
+}
+
+void Components::Camera::Look(Components::Camera::Camera *cam, Components::Camera::Camera *activeCam, glm::vec2 mouseOffset)
+{
+    if(cam == activeCam){
         // Rotate Camera
-        xOffset *= cam->mouseSensitivity;
-        yOffset *= cam->mouseSensitivity;
+        mouseOffset *= cam->mouseSensitivity;
 
-        cam->yaw += xOffset;
-        cam->pitch += yOffset;
+        cam->yaw += mouseOffset.x;
+        cam->pitch += mouseOffset.y;
 
         if (cam->pitch > 89.0f) cam->pitch = 89.0f;
         if (cam->pitch < -89.0f) cam->pitch = -89.0f;

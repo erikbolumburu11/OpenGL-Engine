@@ -35,7 +35,6 @@ void Game::Start()
 
 	glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	////////////////
 	// SCENE INIT //
@@ -69,7 +68,7 @@ void Game::Start()
 	// Create Light
 	{
 		entt::entity lightEntity = registry.create();
-		Components::LightSource& light = registry.emplace<Components::LightSource>(lightEntity, glm::vec3(1.0f, 0.0f, 1.0f));
+		Components::LightSource& light = registry.emplace<Components::LightSource>(lightEntity, glm::vec3(1.0f, 1.0f, 1.0f));
 		Components::Transform& transform = registry.emplace<Components::Transform>(lightEntity, 
 			glm::vec3(1, 1, 1), glm::vec3(1), glm::vec3(1)
 		);
@@ -90,7 +89,7 @@ void Game::Start()
 
 		ImGui::Render();
 		ImGui::EndFrame();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData()); // Not running this function hides ImGui UI!!!
 
 		glfwSwapBuffers(window);
 	}
@@ -113,10 +112,16 @@ void Game::Render()
 {
 	auto shapes = registry.view<Components::Shape>();
 	shapes.each([&](Components::Shape& shape){
-		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera, registry), registry, deltaTime);
+		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera, registry), registry, activeCamera, deltaTime);
 	});
 
-	TestMenu();
+
+	entt::entity lightEnt;
+	auto lights = registry.view<Components::LightSource>();
+	lights.each([&](Components::LightSource& light){
+		lightEnt = entt::to_entity(registry, light);
+	});
+	TestMenu(lightEnt, registry);
 }
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {

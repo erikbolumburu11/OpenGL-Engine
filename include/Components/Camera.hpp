@@ -27,6 +27,8 @@ namespace Components {
         glm::mat4 GetViewMatrix(Components::Camera::Camera* cam, entt::registry& reg);
 
         void Move(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow* window, entt::registry& reg, float deltaTime);
-        void Look(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow* window, float deltaTime);
+        
+        glm::vec2 GetMouseOffset(GLFWwindow* window);
+        void Look(Components::Camera::Camera* cam, Components::Camera::Camera* activeCame, glm::vec2 mouseOffset);
     }
 }
