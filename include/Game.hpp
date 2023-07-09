@@ -3,17 +3,20 @@
 #include <vector>
 
 #include <glad/glad.h>
-#include <entt/entt.hpp>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+
+#include <entt/entt.hpp>
+
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include <constants.hpp>
+
 #include <ResourceManager.hpp>
 #include <Renderer.hpp>
+#include <Components/Camera.hpp>
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
 
 class Game {
 public:
@@ -23,15 +26,22 @@ public:
 	Renderer& GetRenderer() { return renderer; };
 	entt::registry& GetRegistry() { return registry; };
 	float GetDeltaTime() { return deltaTime; };
+	Components::Camera::Camera* GetActiveCamera() { if(activeCamera) return activeCamera; };
+
+	void SetActiveCamera(Components::Camera::Camera* cam) { activeCamera = cam; };
 
 private:
 	void Update();
 	void Render();
 
 	GLFWwindow* window;
-	ResourceManager resourceManager;
 	Renderer renderer;
+
+	ResourceManager resourceManager;
 	entt::registry registry;
+
+	Components::Camera::Camera* activeCamera;
+
 	float deltaTime = 0.0f;
 	float lastFrame = 0.0f;
 };

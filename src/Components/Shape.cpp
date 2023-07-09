@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <Game.hpp>
-#include <Shape.hpp>
+#include <Components/Shape.hpp>
 
 void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat) {
 
@@ -27,7 +27,6 @@ void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, M
     material = mat;
 
     model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);

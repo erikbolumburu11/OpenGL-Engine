@@ -2,14 +2,12 @@
 #include <TestMenu.hpp>
 #include <shapes/cube.hpp>
 
-void FramebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 
 void Game::Start()
 {
 	glfwInit();
+
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -35,6 +33,13 @@ void Game::Start()
 
 	glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+	// Create Camera
+	entt::entity cameraEntity = registry.create();
+	Components::Camera::Camera& cam = registry.emplace<Components::Camera::Camera>(cameraEntity);
+	activeCamera = &cam;
+
 	resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 	resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
 
@@ -48,19 +53,9 @@ void Game::Start()
 		shape.worldPosition = glm::vec3(i * 2, 0, 0);
 	}
 
-	Update();
-}
-
-void Game::Update()
-{
 	while (!glfwWindowShouldClose(window))
 	{
-
-        float currentFrame = static_cast<float>(glfwGetTime());
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
-		glfwPollEvents();
+		Update();
 
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
@@ -71,23 +66,37 @@ void Game::Update()
 
 		Render();
 
-		TestMenu();
-
 		ImGui::Render();
 		ImGui::EndFrame();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
 	}
-
+	
 	glfwTerminate();
+}
+
+void Game::Update()
+{
+	float currentFrame = static_cast<float>(glfwGetTime());
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
+
+	Components::Camera::CameraUpdate(window, activeCamera, registry, deltaTime);
+
+	glfwPollEvents();
 }
 
 void Game::Render()
 {
 	auto shapes = registry.view<Components::Shape>();
 	shapes.each([&](Components::Shape shape){
-		renderer.Draw(shape, deltaTime);
+		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera), deltaTime);
 	});
+
+	TestMenu();
+}
+
+void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
 }

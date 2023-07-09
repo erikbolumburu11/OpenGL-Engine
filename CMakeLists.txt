@@ -5,7 +5,7 @@ project(OpenGL-Engine VERSION 0.1.0 LANGUAGES C CXX)
 include(CTest)
 enable_testing()
 
-file(GLOB sources CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB sources CONFIGURE_DEPENDS "src/*.cpp" "src/Components/*.cpp")
 
 add_executable(OpenGL-Engine "${sources}") 
 target_include_directories(OpenGL-Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include")
