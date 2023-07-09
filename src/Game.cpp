@@ -1,5 +1,7 @@
 #include "Game.hpp"
 #include <TestMenu.hpp>
+#include <Components/Transform.hpp>
+#include <Components/Light.hpp>
 #include <shapes/cube.hpp>
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
@@ -35,22 +37,42 @@ void Game::Start()
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	////////////////
+	// SCENE INIT //
+	////////////////
+
 	// Create Camera
-	entt::entity cameraEntity = registry.create();
-	Components::Camera::Camera& cam = registry.emplace<Components::Camera::Camera>(cameraEntity);
-	activeCamera = &cam;
+	{
+		entt::entity cameraEntity = registry.create();
+		Components::Camera::Camera& cam = registry.emplace<Components::Camera::Camera>(cameraEntity);
+		Components::Transform& transform = registry.emplace<Components::Transform>(cameraEntity, 
+			glm::vec3(0, 0, 6), glm::vec3(1), glm::vec3(1)
+		);
+		activeCamera = &cam;
+	}
 
 	resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
 	resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
 
-	// Generate Cubes
-	Components::ShapeData sd(glm::vec3(0, 1, 0), cubeVertices, resourceManager.materials["BasicMaterial"]);
-	registry.on_construct<Components::Shape>().connect<&Components::OnShapeConstructed>(sd);
+	// Create Cubes
+	Components::ShapeData sd(cubeVertices, resourceManager.materials["BasicMaterial"]);
+	registry.on_construct<Components::Shape>().connect<&Components::OnShapeConstructed>(sd); 
 	for (int i = -1; i < 2; i++)
 	{
 		const auto cube = registry.create();	
 		Components::Shape& shape = registry.emplace<Components::Shape>(cube);
-		shape.worldPosition = glm::vec3(i * 2, 0, 0);
+		Components::Transform& transform = registry.emplace<Components::Transform>(cube, 
+			glm::vec3(i * 2, 0, 0), glm::vec3(1), glm::vec3(1)
+		);
+	}
+
+	// Create Light
+	{
+		entt::entity lightEntity = registry.create();
+		Components::LightSource& light = registry.emplace<Components::LightSource>(lightEntity, glm::vec3(1.0f, 0.0f, 1.0f));
+		Components::Transform& transform = registry.emplace<Components::Transform>(lightEntity, 
+			glm::vec3(1, 1, 1), glm::vec3(1), glm::vec3(1)
+		);
 	}
 
 	while (!glfwWindowShouldClose(window))
@@ -90,8 +112,8 @@ void Game::Update()
 void Game::Render()
 {
 	auto shapes = registry.view<Components::Shape>();
-	shapes.each([&](Components::Shape shape){
-		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera), deltaTime);
+	shapes.each([&](Components::Shape& shape){
+		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera, registry), registry, deltaTime);
 	});
 
 	TestMenu();

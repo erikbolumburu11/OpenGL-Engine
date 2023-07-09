@@ -1,12 +1,14 @@
-#include "Components/Camera.hpp"
+#include <entt/entity/registry.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <constants.hpp>
+#include "Components/Camera.hpp"
+#include "Components/Transform.hpp"
 
 void Components::Camera::CameraUpdate(GLFWwindow* window, Components::Camera::Camera* activeCam, entt::registry& reg, float deltaTime)
 {
     auto cams = reg.view<Components::Camera::Camera>();
     cams.each([&](Components::Camera::Camera& cam){
-        Components::Camera::Move(&cam, activeCam, window, deltaTime);
+        Components::Camera::Move(&cam, activeCam, window, reg, deltaTime);
         Components::Camera::Look(&cam, activeCam, window, deltaTime);
     });
 }
@@ -23,18 +25,22 @@ void Components::Camera::UpdateCameraVectors(Components::Camera::Camera* cam)
     cam->up = glm::normalize(glm::cross(cam->right, cam->front));
 }
 
-glm::mat4 Components::Camera::GetViewMatrix(Components::Camera::Camera *cam) {
-    return glm::lookAt(cam->pos, cam->pos + cam->front, cam->up);
+glm::mat4 Components::Camera::GetViewMatrix(Components::Camera::Camera *cam, entt::registry& reg) {
+    entt::entity camEntity = entt::to_entity(reg, *cam);
+    glm::vec3& pos = reg.get<Components::Transform>(camEntity).pos;
+    return glm::lookAt(pos, pos + cam->front, cam->up);
 }
 
-void Components::Camera::Move(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow *window, float deltaTime)
+void Components::Camera::Move(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow *window, entt::registry& reg, float deltaTime)
 {
     if(cam == activeCam){
+        entt::entity camEntity = entt::to_entity(reg, *cam);
+        glm::vec3& pos = reg.get<Components::Transform>(camEntity).pos;
         float vel = cam->moveSpeed * deltaTime;
-        if(glfwGetKey(window, GLFW_KEY_W)) cam->pos += cam->front * vel;
-        if(glfwGetKey(window, GLFW_KEY_S)) cam->pos -= cam->front * vel;
-        if(glfwGetKey(window, GLFW_KEY_A)) cam->pos -= cam->right * vel;
-        if(glfwGetKey(window, GLFW_KEY_D)) cam->pos += cam->right * vel;
+        if(glfwGetKey(window, GLFW_KEY_W)) pos += cam->front * vel;
+        if(glfwGetKey(window, GLFW_KEY_S)) pos -= cam->front * vel;
+        if(glfwGetKey(window, GLFW_KEY_A)) pos -= cam->right * vel;
+        if(glfwGetKey(window, GLFW_KEY_D)) pos += cam->right * vel;
     }
 }
 void Components::Camera::Look(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow *window, float deltaTime)

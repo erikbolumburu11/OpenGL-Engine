@@ -5,10 +5,8 @@
 
 namespace Components {
     namespace Camera {
-
         struct Camera {
             public:
-            glm::vec3 pos = glm::vec3(0, 0, 0);
             glm::vec3 front = glm::vec3(0, 0, -1);
             glm::vec3 up = glm::vec3(0, 1, 0);
             glm::vec3 right;
@@ -26,9 +24,9 @@ namespace Components {
         
         void UpdateCameraVectors(Components::Camera::Camera* cam);
 
-        glm::mat4 GetViewMatrix(Components::Camera::Camera* cam);
+        glm::mat4 GetViewMatrix(Components::Camera::Camera* cam, entt::registry& reg);
 
-        void Move(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow* window, float deltaTime);
+        void Move(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow* window, entt::registry& reg, float deltaTime);
         void Look(Components::Camera::Camera* cam, Components::Camera::Camera* activeCam, GLFWwindow* window, float deltaTime);
     }
 }

@@ -4,7 +4,7 @@
 #include <Game.hpp>
 #include <Components/Shape.hpp>
 
-void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, Material mat) {
+void Components::Shape::Initialize(std::vector<float> vertices, Material mat) {
 
     unsigned int VBO;
 
@@ -22,8 +22,6 @@ void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, M
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);  
 
-    worldPosition = pos;
-
     material = mat;
 
     model = glm::mat4(1.0f);
@@ -37,5 +35,5 @@ void Components::Shape::Initialize(std::vector<float> vertices, glm::vec3 pos, M
 
 void Components::OnShapeConstructed(Components::ShapeData sd, entt::registry& reg, entt::entity e) {
 	Components::Shape& shape = reg.get<Components::Shape>(e);
-    shape.Initialize(sd.vertices, sd.pos, sd.mat);
+    shape.Initialize(sd.vertices, sd.mat);
 }
