@@ -19,8 +19,8 @@ struct Renderer {
         entt::entity shapeEntity = entt::to_entity(reg, shape);
         glm::vec3 pos = reg.get<Components::Transform>(shapeEntity).pos;
 
-        entt::entity camEntity = entt::to_entity(reg, cam);
-        glm::vec3 camPos = reg.get<Components::Transform>(shapeEntity).pos;
+        entt::entity camEntity = entt::to_entity(reg, *cam);
+        glm::vec3 camPos = reg.get<Components::Transform>(camEntity).pos;
 
 		shape.model = glm::translate(glm::mat4(1.0f), glm::vec3(pos));  
 
@@ -28,17 +28,32 @@ struct Renderer {
 		shape.material.shader.setMat4("view", viewMat);
 		shape.material.shader.setMat4("projection", shape.projection);
 
-		entt::entity lightEnt;
-		auto lights = reg.view<Components::LightSource>();
-		lights.each([&](Components::LightSource& light){
-			lightEnt = entt::to_entity(reg, light);
-		});
-
-		shape.material.shader.setVec3("lightColor", reg.get<Components::LightSource>(lightEnt).color);
-		shape.material.shader.setVec3("lightPos", reg.get<Components::Transform>(lightEnt).pos);
 		shape.material.shader.setVec3("viewPos", camPos);
 
-		glBindTexture(GL_TEXTURE_2D, shape.material.texture.ID);
+		shape.material.shader.SetFloat("material.shininess", shape.material.shininess);
+
+		//////////////////////
+		// DIRECTIONAL LIGHT//
+		//////////////////////
+		entt::entity dirLightEnt;
+		Components::Lights::DirectionalLight dirLight;
+		auto lights = reg.view<Components::Lights::DirectionalLight>();
+		lights.each([&](Components::Lights::DirectionalLight& light){
+			dirLight = light;
+			dirLightEnt = entt::to_entity(reg, light);
+		});
+
+		shape.material.shader.setVec3("dirLight.direction", reg.get<Components::Transform>(dirLightEnt).rot);
+		shape.material.shader.setVec3("dirLight.ambient",  dirLight.ambient);
+		shape.material.shader.setVec3("dirLight.diffuse",  dirLight.diffuse);
+		shape.material.shader.setVec3("dirLight.specular", dirLight.specular); 
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, shape.material.diffuse.ID);
+
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, shape.material.specular.ID);
+
 		glBindVertexArray(shape.VAO);
 
 		glDrawArrays(GL_TRIANGLES, 0, 36);

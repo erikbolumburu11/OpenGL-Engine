@@ -6,8 +6,9 @@
 
 struct Material {
     Shader shader;
-    Texture texture;
-    glm::vec4 color;
+    Texture diffuse;
+    Texture specular;
+    float shininess = 64.0f;
 
     Material(){};
 };

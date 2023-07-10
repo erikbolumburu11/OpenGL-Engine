@@ -51,7 +51,12 @@ void Game::Start()
 	}
 
 	resourceManager.materials["BasicMaterial"].shader = Shader("res/gfx/BasicVertShader.vert", "res/gfx/BasicFragShader.frag");
-	resourceManager.materials["BasicMaterial"].texture = Texture("res/tex/wall.jpg");
+	resourceManager.materials["BasicMaterial"].diffuse = Texture("res/tex/container/container.png");
+	resourceManager.materials["BasicMaterial"].specular = Texture("res/tex/container/containerSpecular.png");
+	resourceManager.materials["BasicMaterial"].shader.UseShader();
+	resourceManager.materials["BasicMaterial"].shader.SetInt("material.diffuse", 0);
+	resourceManager.materials["BasicMaterial"].shader.SetInt("material.specular", 1);
+	resourceManager.materials["BasicMaterial"].shininess = 64;
 
 	// Create Cubes
 	Components::ShapeData sd(cubeVertices, resourceManager.materials["BasicMaterial"]);
@@ -65,14 +70,42 @@ void Game::Start()
 		);
 	}
 
-	// Create Light
+	// Create Lights
+
+	// Directional Light
 	{
-		entt::entity lightEntity = registry.create();
-		Components::LightSource& light = registry.emplace<Components::LightSource>(lightEntity, glm::vec3(1.0f, 1.0f, 1.0f));
-		Components::Transform& transform = registry.emplace<Components::Transform>(lightEntity, 
-			glm::vec3(1, 1, 1), glm::vec3(1), glm::vec3(1)
+		entt::entity dirLightEntity = registry.create();
+		Components::Lights::DirectionalLight& light = registry.emplace<Components::Lights::DirectionalLight>(dirLightEntity,
+			glm::vec3(0.1f), glm::vec3(0.5f), glm::vec3(1)
+		);
+		Components::Transform& transform = registry.emplace<Components::Transform>(dirLightEntity, 
+			glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-0.3f), glm::vec3(1)
 		);
 	}
+	// Point Lights
+	// {
+	// 	{
+	// 		entt::entity pointLightEntity = registry.create();
+	// 		Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
+	// 			1, 0.09f, 0.032f,
+	// 			glm::vec3(0.025f), glm::vec3(0.5f), glm::vec3(1)
+	// 		);
+	// 		Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
+	// 			glm::vec3(-2.0f, -1.0f, 0.0f), glm::vec3(1), glm::vec3(1)
+	// 		);
+	// 	}
+	// 	{
+	// 		entt::entity pointLightEntity = registry.create();
+	// 		Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
+	// 			1.0f, 0.09f, 0.032f,
+	// 			glm::vec3(0.025f), glm::vec3(0.5f), glm::vec3(1.0f)
+	// 		);
+	// 		Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
+	// 			glm::vec3(2.0f, -1.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f)
+	// 		);
+
+	// 	}
+	// }
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -82,7 +115,7 @@ void Game::Start()
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 
-		glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+		glClearColor(0.025f, 0.025f, 0.025f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		Render();
@@ -115,13 +148,7 @@ void Game::Render()
 		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera, registry), registry, activeCamera, deltaTime);
 	});
 
-
-	entt::entity lightEnt;
-	auto lights = registry.view<Components::LightSource>();
-	lights.each([&](Components::LightSource& light){
-		lightEnt = entt::to_entity(registry, light);
-	});
-	TestMenu(lightEnt, registry);
+	TestMenu();
 }
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {

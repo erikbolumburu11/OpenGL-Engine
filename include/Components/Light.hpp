@@ -2,7 +2,21 @@
 #include <glm/glm.hpp>
 
 namespace Components {
-    struct LightSource {
-        glm::vec3 color;
-    };
+    namespace Lights{
+        struct DirectionalLight {
+            glm::vec3 ambient;
+            glm::vec3 diffuse;
+            glm::vec3 specular;
+        };
+        
+        struct PointLight {
+            float constant;
+            float linear;
+            float quadraticf;
+
+            glm::vec3 ambient;
+            glm::vec3 diffuse;
+            glm::vec3 specular;
+        };
+    }
 }
