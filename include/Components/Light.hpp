@@ -12,7 +12,7 @@ namespace Components {
         struct PointLight {
             float constant;
             float linear;
-            float quadraticf;
+            float quadratic;
 
             glm::vec3 ambient;
             glm::vec3 diffuse;

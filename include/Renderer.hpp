@@ -48,6 +48,24 @@ struct Renderer {
 		shape.material.shader.setVec3("dirLight.diffuse",  dirLight.diffuse);
 		shape.material.shader.setVec3("dirLight.specular", dirLight.specular); 
 
+		///////////////////////
+		///// POINT LIGHTS/////
+		///////////////////////
+		int i = 0;
+		auto pointLights = reg.view<Components::Lights::PointLight, Components::Transform>();
+		pointLights.each([&](Components::Lights::PointLight& light, Components::Transform& transform){
+			std::string pointLight = "pointLights[" + std::to_string(i) + "]";
+			shape.material.shader.setVec3(pointLight + ".position", transform.pos);
+			shape.material.shader.setVec3(pointLight + ".ambient",  light.ambient);
+			shape.material.shader.setVec3(pointLight + ".diffuse",  light.diffuse);
+			shape.material.shader.setVec3(pointLight + ".specular", light.specular); 
+			shape.material.shader.SetFloat(pointLight + ".constant", light.constant); 
+			shape.material.shader.SetFloat(pointLight + ".linear", light.linear); 
+			shape.material.shader.SetFloat(pointLight + ".quadratic", light.quadratic); 
+			i++;
+		});
+
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, shape.material.diffuse.ID);
 
