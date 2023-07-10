@@ -87,21 +87,21 @@ void Game::Start()
 		{
 			entt::entity pointLightEntity = registry.create();
 			Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
-				1.0f, 0.09f, 0.032f,
-				glm::vec3(0.025f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1)
+				1.0f, 0.22f, 0.20f,
+				glm::vec3(0.025f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0)
 			);
 			Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
-				glm::vec3(-4.0f, -1.0f, 1.0f), glm::vec3(1), glm::vec3(1)
+				glm::vec3(-2.0f, -0.5f, -1.0f), glm::vec3(1), glm::vec3(1)
 			);
 		}
 		{
 			entt::entity pointLightEntity = registry.create();
 			Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
-				1.0f, 0.09f, 0.032f,
-				glm::vec3(0.025f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f)
+				1.0f, 0.22f, 0.20f,
+				glm::vec3(0.025f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)
 			);
 			Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
-				glm::vec3(4.0f, -1.0f, 1.0f), glm::vec3(1.0f), glm::vec3(1.0f)
+				glm::vec3(2.0f, -0.5f, -1.0f), glm::vec3(1.0f), glm::vec3(1.0f)
 			);
 
 		}
