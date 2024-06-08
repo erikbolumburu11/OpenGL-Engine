@@ -3,7 +3,6 @@
 #include <Components/Transform.hpp>
 #include <Components/Light.hpp>
 #include <shapes/cube.hpp>
-#include <LightManager.hpp>
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height);
 
@@ -36,7 +35,6 @@ void Game::Start()
 
 	glfwSetFramebufferSizeCallback(window, FramebufferSizeCallback);
 
-	LightManager lightManager(registry);
 
 
 	////////////////
@@ -86,53 +84,6 @@ void Game::Start()
 		);
 	}
 	// Point Lights
-	lightManager.CreatePointLight(registry,
-		Components::Lights::PointLight {
-			false,
-			1.0f, 0.22f, 0.20f,
-			glm::vec3(0.025f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0f)
-		}, 
-		Components::Transform {
-			glm::vec3(-2.0f, -0.5f, -1.0f), glm::vec3(1), glm::vec3(1)
-		}
-	);
-
-	lightManager.CreatePointLight(registry,
-		Components::Lights::PointLight {
-			false,
-			1.0f, 0.22f, 0.20f,
-			glm::vec3(0.025f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)
-		}, 
-		Components::Transform {
-			glm::vec3(2.0f, -0.5f, -1.0f), glm::vec3(1), glm::vec3(1)
-		}
-	);
-
-	// {
-	// 	{
-	// 		entt::entity pointLightEntity = registry.create();
-	// 		Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
-	// 			false,
-	// 			1.0f, 0.22f, 0.20f,
-	// 			glm::vec3(0.025f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 1.0)
-	// 		);
-	// 		Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
-	// 			glm::vec3(-2.0f, -0.5f, -1.0f), glm::vec3(1), glm::vec3(1)
-	// 		);
-	// 	}
-	// 	{
-	// 		entt::entity pointLightEntity = registry.create();
-	// 		Components::Lights::PointLight& light = registry.emplace<Components::Lights::PointLight>(pointLightEntity,
-	// 			false,
-	// 			1.0f, 0.22f, 0.20f,
-	// 			glm::vec3(0.025f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)
-	// 		);
-	// 		Components::Transform& transform = registry.emplace<Components::Transform>(pointLightEntity, 
-	// 			glm::vec3(2.0f, -0.5f, -1.0f), glm::vec3(1.0f), glm::vec3(1.0f)
-	// 		);
-
-	// 	}
-	// }
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -175,7 +126,7 @@ void Game::Render()
 		renderer.Draw(shape, Components::Camera::GetViewMatrix(activeCamera, registry), registry, activeCamera, deltaTime);
 	});
 
-	TestMenu();
+	TestMenu(*this);
 }
 
 void FramebufferSizeCallback(GLFWwindow* window, int width, int height) {

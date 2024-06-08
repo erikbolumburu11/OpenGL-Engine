@@ -5,6 +5,7 @@
 
 struct LightManager {
 public:
+    LightManager(){}
     LightManager(entt::registry& registry);
 
     void CreatePointLight(entt::registry& registry, Components::Lights::PointLight LightData, Components::Transform transform);
