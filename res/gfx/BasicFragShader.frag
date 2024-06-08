@@ -1,4 +1,7 @@
 #version 330 core
+
+#define UPPER_POINT_LIGHT_LIMIT 32
+
 out vec4 FragColor;
   
 in vec2 texCoord;
@@ -39,8 +42,7 @@ struct PointLight {
     vec3 specular;
 };
 
-#define NR_POINT_LIGHTS 2 
-uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform PointLight pointLights[UPPER_POINT_LIGHT_LIMIT];
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);  
 
@@ -52,7 +54,7 @@ void main()
     // phase 1: Directional lighting
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: Point lights
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+    for(int i = 0; i < UPPER_POINT_LIGHT_LIMIT; i++)
         result += CalcPointLight(pointLights[i], norm, fragPos, viewDir);    
     // phase 3: Spot light
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    

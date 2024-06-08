@@ -10,6 +10,8 @@ namespace Components {
         };
         
         struct PointLight {
+            bool active;
+
             float constant;
             float linear;
             float quadratic;
