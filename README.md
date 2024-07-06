@@ -1,5 +1,5 @@
 # OpenGL-Engine
-[Video](https://youtu.be/m3b99skfDf8)
+[Video](https://youtu.be/lygBcTKR5fo?si=EZV7-a6U0Am7yHdJ)
 
 Programmed a 3D renderer using the ‘Blinn-Phong’ reflection model to replicate realistic lighting using OpenGL.
 
